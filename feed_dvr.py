@@ -69,6 +69,8 @@ with open(os.path.join(feed_dvr_dir, 'configuration.json')) as config_json:
                         if new_episode not in database['feeds'][feed['url']]:
                             # Grab the filename from the URL
                             filename = new_episode.split('/')[-1]
+                            # Strip off the query string, if it exists
+                            filename = filename.split('?')[0]
                             # Open the file for downloading from the remote
                             # server
                             response = urllib2.urlopen(new_episode)
@@ -93,6 +95,8 @@ with open(os.path.join(feed_dvr_dir, 'configuration.json')) as config_json:
                                     url_for_removal = database['feeds'][feed['url']].pop()
                                     # From the URL, grab the filename
                                     filename_for_removal = url_for_removal.split('/')[-1]
+                                    # Strip off the query string, if it exists
+                                    filename_for_removal = filename_for_removal.split('?')[0]
                                     # Remove the file if it exists
                                     if os.path.isfile(os.path.join(feed['destination'], filename_for_removal)):
                                         print ('Removing ' + filename_for_removal + ' from ' + feed['destination'])
