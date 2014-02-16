@@ -21,8 +21,20 @@ System Requirements
 basis to keep your feed content fresh.
 
 
+Feed DVR is designed to be cross-platform.  If you can run python you should be 
+able to run Feed DVR.
+
+Note to Windows users:  You may need to install lxml in addition to Python for 
+Windows.  lxml Windows installation packages are available for download here:
+
+https://pypi.python.org/pypi/lxml
+
+
 Configuration (held in configuration.json)
 ------------------------------------------
+
+Feed DVR will download the latest episodes from the feeds you specify in 
+configuration.json.  For each feed, the following options are available.
 
 **url**:  (required, no default) URL to the feed
 
