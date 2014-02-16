@@ -15,11 +15,20 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+# We load and dump JSON
 import json
-import urllib2
+# We need sys to find our our project's absolute location on whatever machine
+# it happens to be running on.
 import sys
+# We need os file operations
 import os
+# We need etree from lxml to parse the feed XML
 from lxml import etree
+# We use urlretrieve to download the feed episodes
+try:
+    from urllib.request import urlretrieve
+except ImportError:
+    from urllib import urlretrieve
 
 # Get the location of feed_dvr on the system
 feed_dvr_dir = os.path.dirname(os.path.abspath(sys.argv[0]))
@@ -80,14 +89,10 @@ with open(os.path.join(feed_dvr_dir, 'configuration.json')) as config_json:
                             filename = new_episode.split('/')[-1]
                             # Strip off the query string, if it exists
                             filename = filename.split('?')[0]
-                            # Open the file for downloading from the remote
-                            # server
-                            response = urllib2.urlopen(new_episode)
-                            # Open the local file for writing
-                            with open(os.path.join(feed['destination'], filename), "w") as f:
-                                # Download the file
-                                print ('Downloading ' + new_episode)
-                                f.write(response.read())
+                            # Download the file
+                            print ('Downloading ' + new_episode)
+                            try:
+                                urlretrieve(new_episode, os.path.join(feed['destination'], filename))
                                 print ('Downloaded ' + filename + ' to ' + feed['destination'])
                                 # Add this to the top of the list of episodes
                                 # we're aware of having downloaded for this
@@ -113,9 +118,10 @@ with open(os.path.join(feed_dvr_dir, 'configuration.json')) as config_json:
                                             os.remove(os.path.join(feed['destination'], filename_for_removal))
                                         except OSError:
                                             print ('Attempt to remove ' + filename_for_removal + ' from ' + feed['destination'] + ' failed')
-                                            pass
                                 # Update our database on disk
                                 # Move to the start of our file
                                 database_json.seek(0)
                                 json.dump(database, database_json, skipkeys=False, ensure_ascii=True, check_circular=True, allow_nan=True, cls=None, indent=4, separators=(',', ': '))
                                 database_json.truncate()
+                            except IOError:
+                                print ('Attempt to download ' + new_episode + ' to ' + os.path.join(feed['destination'], filename) + ' failed')
