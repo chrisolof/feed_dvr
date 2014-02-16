@@ -17,16 +17,19 @@
 
 import json
 import urllib2
+import sys
 import os
 from lxml import etree
 
+# Get the location of feed_dvr on the system
+feed_dvr_dir = os.path.dirname(os.path.abspath(sys.argv[0]))
 
 # Open our json config file
-with open('configuration.json') as config_json:
+with open(os.path.join(feed_dvr_dir, 'configuration.json')) as config_json:
     # Decode the json into an object we can work with
     configuration = json.load(config_json)
     # Open our database
-    with open('database.json', 'r+') as database_json:
+    with open(os.path.join(feed_dvr_dir, 'database.json'), 'r+') as database_json:
         # Decode the json into an object we can work with
         database = json.load(database_json)
         # For each feed
@@ -65,7 +68,7 @@ with open('configuration.json') as config_json:
                             # server
                             response = urllib2.urlopen(new_episode)
                             # Open the local file for writing
-                            with open(feed['destination'] + '/' + filename, "w") as f:
+                            with open(os.path.join(feed['destination'], filename), "w") as f:
                                 # Download the file
                                 print ('Downloading ' + new_episode)
                                 f.write(response.read())
@@ -86,10 +89,10 @@ with open('configuration.json') as config_json:
                                     # From the URL, grab the filename
                                     filename_for_removal = url_for_removal.split('/')[-1]
                                     # Remove the file if it exists
-                                    if os.path.isfile(feed['destination'] + '/' + filename_for_removal):
+                                    if os.path.isfile(os.path.join(feed['destination'], filename_for_removal)):
                                         print ('Removing ' + filename_for_removal + ' from ' + feed['destination'])
                                         try:
-                                            os.remove(feed['destination'] + '/' + filename_for_removal)
+                                            os.remove(os.path.join(feed['destination'], filename_for_removal))
                                         except OSError:
                                             print ('Attempt to remove ' + filename_for_removal + ' from ' + feed['destination'] + ' failed')
                                             pass
