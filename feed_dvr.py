@@ -52,6 +52,15 @@ with open(os.path.join(feed_dvr_dir, 'configuration.json')) as config_json:
                     # If we're up to our episode limit, break out
                     if len(newest_episodes) == keep:
                         break
+                # If we got nothing looking in channel/item/media:content, try
+                # looking in channel/item/enclosure
+                if len(newest_episodes) < keep:
+                    for item in tree.iterfind('channel/item/enclosure'):
+                        if 'url' in item.attrib:
+                            newest_episodes.append(item.attrib['url'])
+                        # If we're up to our episode limit, break out
+                        if len(newest_episodes) == keep:
+                            break
                 if len(newest_episodes) > 0:
                     if feed['url'] not in database['feeds']:
                         database['feeds'][feed['url']] = list()
