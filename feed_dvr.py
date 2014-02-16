@@ -87,7 +87,7 @@ with open(os.path.join(feed_dvr_dir, 'configuration.json')) as config_json:
                                 # If by downloading this episode we've gone over
                                 # the number of episodes we're to keep for this
                                 # feed, remove the oldest
-                                if len(database['feeds'][feed['url']]) > keep:
+                                while len(database['feeds'][feed['url']]) > keep:
                                     # Remove oldest file
                                     # Grab the URL of the oldest file we have,
                                     # and at the same time take it out of our
