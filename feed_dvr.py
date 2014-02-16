@@ -55,6 +55,11 @@ with open(os.path.join(feed_dvr_dir, 'configuration.json')) as config_json:
                 if len(newest_episodes) > 0:
                     if feed['url'] not in database['feeds']:
                         database['feeds'][feed['url']] = list()
+                    # Reverse the list so that we download episodes from oldest
+                    # to newest.  This is important for keeping the order of
+                    # episodes in the database correct on an initial feed
+                    # download.
+                    newest_episodes.reverse();
                     # Iterate through our new episodes.  If our new episode is
                     # not in the database already, download it and add it into
                     # the database.
