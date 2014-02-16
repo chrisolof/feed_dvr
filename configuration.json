@@ -1,0 +1,10 @@
+{
+    "feeds": [
+        {
+            "url": "http://feeds.feedburner.com/tedtalks_video",
+            "active": true,
+            "destination": "/your/destination/folder",
+            "keep": 2
+        }
+    ]
+}
